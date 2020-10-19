@@ -28,17 +28,56 @@ class MainFrame extends JFrame
     {
         return null;
     }
-    private Box createMemoryBox()
+    private JRadioButton createMRadioButton(String buttonName, final Double mem)
     {
-        return null;
+        JRadioButton button = new JRadioButton(buttonName);
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                MainFrame.this.curMem = mem;
+                MainFrame.this.pack();
+                MainFrame.this.revalidate();
+            }});
+        return button;
+    }
+    private JPanel createMemoryPanel()
+    {
+        Box box = Box.createVerticalBox();
+        Box mem1Box = Box.createHorizontalBox();
+        Box mem2Box = Box.createHorizontalBox();
+        Box mem3Box = Box.createHorizontalBox();
+        JRadioButton mem11Select = createMRadioButton("Переменная 1",mem1);
+        JRadioButton mem21Select = createMRadioButton("Переменная 2",mem2);
+        JRadioButton mem31Select = createMRadioButton("Переменная 3",mem3);;
+        ButtonGroup memGroup = new ButtonGroup();
+        memGroup.add(mem11Select);
+        memGroup.add(mem21Select);
+        memGroup.add(mem31Select);
+        memGroup.setSelected(memGroup.getElements().nextElement().getModel(), true);
+        int ident = 10;
+        mem1Box.add(mem11Select);
+        mem1Box.add(Box.createHorizontalStrut(ident));
+        mem1Box.add(new JLabel(mem1.toString()));
+        mem2Box.add(mem21Select);
+        mem2Box.add(Box.createHorizontalStrut(ident));
+        mem2Box.add(new JLabel(mem2.toString()));
+        mem3Box.add(mem31Select);
+        mem3Box.add(Box.createHorizontalStrut(ident));
+        mem3Box.add(new JLabel(mem3.toString()));
+        box.add(mem1Box);
+        box.add(mem2Box);
+        box.add(mem3Box);
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        panel.add(box);
+        return panel;
     }
     private Box createResultBox()
     {
         return null;
     }
-    private Box createInputBox()
+    private JPanel createInputPanel()
     {
-        Box box = Box.createHorizontalBox();
         Box boxX = Box.createHorizontalBox();
         Box boxY = Box.createHorizontalBox();
         Box boxZ = Box.createHorizontalBox();
@@ -62,14 +101,14 @@ class MainFrame extends JFrame
         boxZ.add(labelZ);
         boxZ.add(Box.createHorizontalStrut(labelIdent));
         boxZ.add(textFieldZ);
+        Box box = Box.createVerticalBox();
         box.add(Box.createHorizontalGlue());
         box.add(boxX);
-        box.add(Box.createHorizontalStrut(boxIdent));
         box.add(boxY);
-        box.add(Box.createHorizontalStrut(boxIdent));
         box.add(boxZ);
-        box.add(Box.createHorizontalGlue());
-        return box;
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        panel.add(box);
+        return panel;
     }
     private JRadioButton createFRadioButton(String buttonName, final int formulaId,final JLabel formulaImage)
     {
@@ -126,10 +165,14 @@ class MainFrame extends JFrame
         this.setLayout(new FlowLayout());
         Box box = Box.createVerticalBox();
         formulaBox = this.createFormulaBox();
-        Box inputBox = this.createInputBox();
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JPanel inputPanel = this.createInputPanel();
+        JPanel memPanel = this.createMemoryPanel();
+        panel.add(memPanel);
+        panel.add(inputPanel);
         box.add(formulaBox);
-        box.add(inputBox);
-        this.add(box);
+        box.add(panel);
+        this.getContentPane().add(box);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true);
         this.pack();
