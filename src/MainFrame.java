@@ -8,11 +8,70 @@ import java.io.File;
 class MainFrame extends JFrame
 {
     private final Dimension frameSize = new Dimension(540,40);
+    //formula variables
     private Box formulaBox = null;
     private JLabel formula1Label = null;
     private JLabel formula2Label = null;
     private int formulaId = 0;
-    private JRadioButton createRadioButton(String buttonName, final int formulaId,final JLabel formulaImage)
+    // memory variables
+    private Double mem1 = 0.0;
+    private Double mem2 = 0.0;
+    private Double mem3 = 0.0;
+    private Double curMem = null;
+    // text fields
+    private JTextField textFieldX = null;
+    private JTextField textFieldY = null;
+    private JTextField textFieldZ = null;
+    private JTextField textFieldResult = null;
+    // methods
+    private Box createControlBox()
+    {
+        return null;
+    }
+    private Box createMemoryBox()
+    {
+        return null;
+    }
+    private Box createResultBox()
+    {
+        return null;
+    }
+    private Box createInputBox()
+    {
+        Box box = Box.createHorizontalBox();
+        Box boxX = Box.createHorizontalBox();
+        Box boxY = Box.createHorizontalBox();
+        Box boxZ = Box.createHorizontalBox();
+        textFieldX = new JTextField("0",10);
+        textFieldY = new JTextField("0",10);
+        textFieldZ = new JTextField("0",10);
+        textFieldX.setMaximumSize(textFieldX.getPreferredSize());
+        textFieldY.setMaximumSize(textFieldY.getPreferredSize());
+        textFieldZ.setMaximumSize(textFieldZ.getPreferredSize());
+        JLabel labelX = new JLabel("X:");
+        JLabel labelY = new JLabel("Y:");
+        JLabel labelZ = new JLabel("Z:");
+        int labelIdent = 15;
+        int boxIdent = 20;
+        boxX.add(labelX);
+        boxX.add(Box.createHorizontalStrut(labelIdent));
+        boxX.add(textFieldX);
+        boxY.add(labelY);
+        boxY.add(Box.createHorizontalStrut(labelIdent));
+        boxY.add(textFieldY);
+        boxZ.add(labelZ);
+        boxZ.add(Box.createHorizontalStrut(labelIdent));
+        boxZ.add(textFieldZ);
+        box.add(Box.createHorizontalGlue());
+        box.add(boxX);
+        box.add(Box.createHorizontalStrut(boxIdent));
+        box.add(boxY);
+        box.add(Box.createHorizontalStrut(boxIdent));
+        box.add(boxZ);
+        box.add(Box.createHorizontalGlue());
+        return box;
+    }
+    private JRadioButton createFRadioButton(String buttonName, final int formulaId,final JLabel formulaImage)
     {
         JRadioButton button = new JRadioButton(buttonName);
         button.addActionListener(new ActionListener() {
@@ -27,6 +86,7 @@ class MainFrame extends JFrame
             }});
         return button;
     }
+
     private Box createFormulaBox()
     {
         // common container
@@ -44,8 +104,8 @@ class MainFrame extends JFrame
             e.printStackTrace();
         }
         //radio group part
-        JRadioButton formula1Select = createRadioButton("Формула 1",1,formula1Label);
-        JRadioButton formula2Select = createRadioButton("Формула 2",2,formula2Label);
+        JRadioButton formula1Select = createFRadioButton("Формула 1",1,formula1Label);
+        JRadioButton formula2Select = createFRadioButton("Формула 2",2,formula2Label);
         ButtonGroup formulaGroup = new ButtonGroup();
         formulaGroup.add(formula1Select);
         formulaGroup.add(formula2Select);
@@ -64,10 +124,15 @@ class MainFrame extends JFrame
         this.setSize(frameSize);
         this.setLocationRelativeTo(null);
         this.setLayout(new FlowLayout());
+        Box box = Box.createVerticalBox();
         formulaBox = this.createFormulaBox();
-        this.add(formulaBox);
+        Box inputBox = this.createInputBox();
+        box.add(formulaBox);
+        box.add(inputBox);
+        this.add(box);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true);
         this.pack();
+
     }
 }
