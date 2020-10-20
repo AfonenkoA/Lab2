@@ -75,12 +75,23 @@ class MainFrame extends JFrame
                     double x = Double.parseDouble(textFieldX.getText());
                     double y = Double.parseDouble(textFieldY.getText());
                     double z = Double.parseDouble(textFieldZ.getText());
-                    Double res;
-                    if(formulaId==1)
-                        res = formula1(x,y,z);
-                    else
-                        res = formula2(x,y,z);
+                    Double res = null;
+                    switch (formulaId)
+                    {
+                        case 1:
+                        {
+                            res = formula1(x, y, z);
+                            break;
+                        }
+                        case 2:
+                        {
+                            res = formula2(x,y,z);
+                            break;
+                        }
+                    }
                     textFieldResult.setText(res.toString());
+                    MainFrame.this.pack();
+                    MainFrame.this.revalidate();
                 }
                 catch (NumberFormatException ex)
                 {
@@ -104,25 +115,28 @@ class MainFrame extends JFrame
                 try
                 {
                     double res = Double.parseDouble(textFieldResult.getText());
-                    if(memId==1)
+                    switch (memId)
                     {
-                        mem1+=res;
-                        res = mem1;
-                        mem1Label.setText("П1 значение : " + mem1);
-                    }
-                    else
-                    {
-                        if (memId == 2)
+                        case 1:
+                        {
+                            mem1+=res;
+                            res = mem1;
+                            mem1Label.setText("П1 значение : " + mem1);
+                            break;
+                        }
+                        case 2:
                         {
                             mem2 += res;
                             res = mem2;
                             mem2Label.setText("П2 значение : " + mem2);
+                            break;
                         }
-                        else
+                        case 3:
                         {
                             mem3 += res;
                             res = mem3;
                             mem3Label.setText("П3 значение : " + mem3);
+                            break;
                         }
                     }
                     textFieldResult.setText(Double.toString(res));
@@ -149,22 +163,25 @@ class MainFrame extends JFrame
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                if (memId == 1)
+                switch (memId)
                 {
-                    mem1 = 0.0;
-                    mem1Label.setText("П1 значение : " + mem1.toString());
-                }
-                else
-                {
-                    if (memId == 2)
+                    case 1:
+                    {
+                        mem1 = 0.0;
+                        mem1Label.setText("П1 значение : " + mem1.toString());
+                        break;
+                    }
+                    case 2:
                     {
                         mem2 = 0.0;
-                        mem2Label.setText("П2 значение : "+mem2.toString());
+                        mem2Label.setText("П2 значение : " + mem2.toString());
+                        break;
                     }
-                    else
+                    case 3:
                     {
                         mem3 = 0.0;
-                        mem3Label.setText("П3 значение : "+mem3.toString());
+                        mem3Label.setText("П3 значение : " + mem3.toString());
+                        break;
                     }
                 }
                 MainFrame.this.pack();
