@@ -103,10 +103,11 @@ class MainFrame extends JFrame
             {
                 try
                 {
-                    Double res = Double.parseDouble(textFieldResult.getText());
+                    double res = Double.parseDouble(textFieldResult.getText());
                     if(memId==1)
                     {
                         mem1+=res;
+                        res = mem1;
                         mem1Label.setText("П1 значение : " + mem1);
                     }
                     else
@@ -114,15 +115,17 @@ class MainFrame extends JFrame
                         if (memId == 2)
                         {
                             mem2 += res;
+                            res = mem2;
                             mem2Label.setText("П2 значение : " + mem2);
                         }
                         else
                         {
                             mem3 += res;
+                            res = mem3;
                             mem3Label.setText("П3 значение : " + mem3);
                         }
                     }
-                    textFieldResult.setText(res.toString());
+                    textFieldResult.setText(Double.toString(res));
                 }
                 catch (NumberFormatException ex)
                 {
@@ -215,7 +218,7 @@ class MainFrame extends JFrame
         Box box = Box.createVerticalBox();
         JRadioButton mem11Select = createMRadioButton("Переменная 1",1);
         JRadioButton mem21Select = createMRadioButton("Переменная 2",2);
-        JRadioButton mem31Select = createMRadioButton("Переменная 3",3);;
+        JRadioButton mem31Select = createMRadioButton("Переменная 3",3);
         ButtonGroup memGroup = new ButtonGroup();
         memGroup.add(mem11Select);
         memGroup.add(mem21Select);
@@ -227,10 +230,6 @@ class MainFrame extends JFrame
         JPanel panel = new JPanel();
         panel.add(box);
         return panel;
-    }
-    private Box createResultBox()
-    {
-        return null;
     }
     private JPanel createInputPanel()
     {
@@ -247,7 +246,6 @@ class MainFrame extends JFrame
         JLabel labelY = new JLabel("Y:");
         JLabel labelZ = new JLabel("Z:");
         int labelIdent = 15;
-        int boxIdent = 20;
         boxX.add(labelX);
         boxX.add(Box.createHorizontalStrut(labelIdent));
         boxX.add(textFieldX);
