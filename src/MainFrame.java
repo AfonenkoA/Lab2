@@ -4,6 +4,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import static java.lang.Math.*;
 
 class MainFrame extends JFrame
 {
@@ -17,7 +18,7 @@ class MainFrame extends JFrame
     private JLabel mem1Label;
     private JLabel mem2Label;
     private JLabel mem3Label;
-    private Double mem1 = 100.0;
+    private Double mem1 = 0.0;
     private Double mem2 = 0.0;
     private Double mem3 = 0.0;
     private int memId = 1;
@@ -28,6 +29,14 @@ class MainFrame extends JFrame
     private JTextField textFieldResult = null;
 
     // methods
+    private double formula1(double x, double y, double z)
+    {
+        return sin(log(y)+sin(PI*y*y))*pow(x*x+sin(z)+exp(cos(z)),1.0/4);
+    }
+    private double formula2(double x, double y, double z)
+    {
+        return pow(cos(exp(x))+pow(log(1+y),2)+sqrt(exp(cos(x))+pow(sin(PI*z),2))+sqrt(1.0/x)+pow(cos(y),2),sin(z));
+    }
     private JPanel createResultPanel()
     {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -39,7 +48,95 @@ class MainFrame extends JFrame
         panel.add(box);
         return panel;
     }
+    private JButton createClearButton()
+    {
+        JButton button = new JButton("Очистить");
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                textFieldX.setText("0");
+                textFieldY.setText("0");
+                textFieldZ.setText("0");
+                textFieldResult.setText("0");
+            }
+        });
+        return button;
+    }
+    private JButton createCalcButton()
+    {
+        JButton button = new JButton("Вычислить");
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                try
+                {
+                    double x = Double.parseDouble(textFieldX.getText());
+                    double y = Double.parseDouble(textFieldY.getText());
+                    double z = Double.parseDouble(textFieldZ.getText());
+                    Double res;
+                    if(formulaId==1)
+                        res = formula1(x,y,z);
+                    else
+                        res = formula2(x,y,z);
+                    textFieldResult.setText(res.toString());
+                }
+                catch (NumberFormatException ex)
+                {
+                    JOptionPane.showMessageDialog(MainFrame.this,
+                            "Ошибка в формате записи числа с плавающей точкой",
+                            "Ошибочный формат числа", JOptionPane.WARNING_MESSAGE);
+                }
+                MainFrame.this.pack();
+                MainFrame.this.revalidate();
+            }
+        });
+        return button;
+    }
+    private JButton createMPlusButton()
+    {
+        JButton button = new JButton("M+");
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                try
+                {
+                    Double res = Double.parseDouble(textFieldResult.getText());
+                    if(memId==1)
+                    {
+                        mem1+=res;
+                        mem1Label.setText("П1 значение : " + mem1);
+                    }
+                    else
+                    {
+                        if (memId == 2)
+                        {
+                            mem2 += res;
+                            mem2Label.setText("П2 значение : " + mem2);
+                        }
+                        else
+                        {
+                            mem3 += res;
+                            mem3Label.setText("П3 значение : " + mem3);
+                        }
+                    }
+                    textFieldResult.setText(res.toString());
+                }
+                catch (NumberFormatException ex)
+                {
+                    JOptionPane.showMessageDialog(MainFrame.this,
+                            "Ошибка в формате записи числа с плавающей точкой",
+                            "Ошибочный формат числа", JOptionPane.WARNING_MESSAGE);
+                }
+                MainFrame.this.pack();
+                MainFrame.this.revalidate();
+            }
 
+        });
+        return button;
+    }
     private JButton createMCButton()
     {
         JButton button = new JButton("MC");
@@ -75,13 +172,20 @@ class MainFrame extends JFrame
     }
     private JPanel createControlPanel()
     {
-        Box box = Box.createVerticalBox();
-        box.add(this.createMCButton());
+        Box memBox = Box.createVerticalBox();
+        memBox.add(this.createMCButton());
+        memBox.add(Box.createVerticalStrut(10));
+        memBox.add(this.createMPlusButton());
+        Box calcBox = Box.createVerticalBox();
+        calcBox.add(this.createCalcButton());
+        calcBox.add(Box.createVerticalStrut(10));
+        calcBox.add(this.createClearButton());
         JPanel panel = new JPanel();
-        panel.add(box);
+        panel.add(memBox);
+        panel.add(calcBox);
         return panel;
     }
-    private JRadioButton createMRadioButton(String buttonName,int memId, final Double mem)
+    private JRadioButton createMRadioButton(String buttonName,int memId)
     {
         JRadioButton button = new JRadioButton(buttonName);
         button.addActionListener(new ActionListener() {
@@ -109,9 +213,9 @@ class MainFrame extends JFrame
     private JPanel createMemorySwitchPanel()
     {
         Box box = Box.createVerticalBox();
-        JRadioButton mem11Select = createMRadioButton("Переменная 1",1,mem1);
-        JRadioButton mem21Select = createMRadioButton("Переменная 2",2,mem2);
-        JRadioButton mem31Select = createMRadioButton("Переменная 3",3,mem3);;
+        JRadioButton mem11Select = createMRadioButton("Переменная 1",1);
+        JRadioButton mem21Select = createMRadioButton("Переменная 2",2);
+        JRadioButton mem31Select = createMRadioButton("Переменная 3",3);;
         ButtonGroup memGroup = new ButtonGroup();
         memGroup.add(mem11Select);
         memGroup.add(mem21Select);
