@@ -7,68 +7,120 @@ import java.io.File;
 
 class MainFrame extends JFrame
 {
-    private final Dimension frameSize = new Dimension(540,40);
+    private final Dimension frameSize = new Dimension(540, 40);
     //formula variables
-    private Box formulaBox = null;
+    private final Box formulaBox;
     private JLabel formula1Label = null;
     private JLabel formula2Label = null;
-    private int formulaId = 0;
+    private int formulaId = 1;
     // memory variables
-    private Double mem1 = 0.0;
+    private JLabel mem1Label;
+    private JLabel mem2Label;
+    private JLabel mem3Label;
+    private Double mem1 = 100.0;
     private Double mem2 = 0.0;
     private Double mem3 = 0.0;
-    private Double curMem = null;
+    private int memId = 1;
     // text fields
     private JTextField textFieldX = null;
     private JTextField textFieldY = null;
     private JTextField textFieldZ = null;
     private JTextField textFieldResult = null;
+
     // methods
-    private Box createControlBox()
+    private JPanel createResultPanel()
     {
-        return null;
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        Box box = Box.createHorizontalBox();
+        box.add(new JLabel("Результат"));
+        box.add(Box.createHorizontalStrut(10));
+        textFieldResult = new JTextField("0", 10);
+        box.add(textFieldResult);
+        panel.add(box);
+        return panel;
     }
-    private JRadioButton createMRadioButton(String buttonName, final Double mem)
+
+    private JButton createMCButton()
+    {
+        JButton button = new JButton("MC");
+        System.out.println(memId);
+        button.addActionListener(new ActionListener()
+        {
+            @Override
+            public void actionPerformed(ActionEvent e)
+            {
+                if (memId == 1)
+                {
+                    mem1 = 0.0;
+                    mem1Label.setText("П1 значение : " + mem1.toString());
+                }
+                else
+                {
+                    if (memId == 2)
+                    {
+                        mem2 = 0.0;
+                        mem2Label.setText("П2 значение : "+mem2.toString());
+                    }
+                    else
+                    {
+                        mem3 = 0.0;
+                        mem3Label.setText("П3 значение : "+mem3.toString());
+                    }
+                }
+                MainFrame.this.pack();
+                MainFrame.this.revalidate();
+            }
+        });
+        return button;
+    }
+    private JPanel createControlPanel()
+    {
+        Box box = Box.createVerticalBox();
+        box.add(this.createMCButton());
+        JPanel panel = new JPanel();
+        panel.add(box);
+        return panel;
+    }
+    private JRadioButton createMRadioButton(String buttonName,int memId, final Double mem)
     {
         JRadioButton button = new JRadioButton(buttonName);
         button.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e)
             {
-                MainFrame.this.curMem = mem;
+                MainFrame.this.memId = memId;
                 MainFrame.this.pack();
                 MainFrame.this.revalidate();
             }});
         return button;
     }
-    private JPanel createMemoryPanel()
+    private JPanel createMemoryShowPanel()
+    {
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel,BoxLayout.Y_AXIS));
+        mem1Label = new JLabel("П1 значение : "+mem1.toString());
+        mem2Label = new JLabel("П2 значение : "+mem2.toString());
+        mem3Label = new JLabel("П3 значение : "+mem3.toString());
+        panel.add(mem1Label);
+        panel.add(mem2Label);
+        panel.add(mem3Label);
+        return panel;
+    }
+    private JPanel createMemorySwitchPanel()
     {
         Box box = Box.createVerticalBox();
-        Box mem1Box = Box.createHorizontalBox();
-        Box mem2Box = Box.createHorizontalBox();
-        Box mem3Box = Box.createHorizontalBox();
-        JRadioButton mem11Select = createMRadioButton("Переменная 1",mem1);
-        JRadioButton mem21Select = createMRadioButton("Переменная 2",mem2);
-        JRadioButton mem31Select = createMRadioButton("Переменная 3",mem3);;
+        JRadioButton mem11Select = createMRadioButton("Переменная 1",1,mem1);
+        JRadioButton mem21Select = createMRadioButton("Переменная 2",2,mem2);
+        JRadioButton mem31Select = createMRadioButton("Переменная 3",3,mem3);;
         ButtonGroup memGroup = new ButtonGroup();
         memGroup.add(mem11Select);
         memGroup.add(mem21Select);
         memGroup.add(mem31Select);
         memGroup.setSelected(memGroup.getElements().nextElement().getModel(), true);
-        int ident = 10;
-        mem1Box.add(mem11Select);
-        mem1Box.add(Box.createHorizontalStrut(ident));
-        mem1Box.add(new JLabel(mem1.toString()));
-        mem2Box.add(mem21Select);
-        mem2Box.add(Box.createHorizontalStrut(ident));
-        mem2Box.add(new JLabel(mem2.toString()));
-        mem3Box.add(mem31Select);
-        mem3Box.add(Box.createHorizontalStrut(ident));
-        mem3Box.add(new JLabel(mem3.toString()));
-        box.add(mem1Box);
-        box.add(mem2Box);
-        box.add(mem3Box);
-        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        box.add(mem11Select);
+        box.add(mem21Select);
+        box.add(mem31Select);
+        JPanel panel = new JPanel();
         panel.add(box);
         return panel;
     }
@@ -106,7 +158,7 @@ class MainFrame extends JFrame
         box.add(boxX);
         box.add(boxY);
         box.add(boxZ);
-        JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        JPanel panel = new JPanel();
         panel.add(box);
         return panel;
     }
@@ -167,15 +219,20 @@ class MainFrame extends JFrame
         formulaBox = this.createFormulaBox();
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         JPanel inputPanel = this.createInputPanel();
-        JPanel memPanel = this.createMemoryPanel();
-        panel.add(memPanel);
+        JPanel memSwitchPanel = this.createMemorySwitchPanel();
+        JPanel memShowPanel = this.createMemoryShowPanel();
+        JPanel controlPanel = this.createControlPanel();
+        JPanel resultPanel = this.createResultPanel();
+        panel.add(memSwitchPanel);
+        panel.add(memShowPanel);
         panel.add(inputPanel);
+        panel.add(controlPanel);
         box.add(formulaBox);
         box.add(panel);
+        box.add(resultPanel);
         this.getContentPane().add(box);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setVisible(true);
         this.pack();
-
     }
 }
